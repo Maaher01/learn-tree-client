@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -6,18 +6,37 @@ import {
   CCardGroup,
   CCol,
   CContainer,
-  CForm,
-  CFormInput,
   CInputGroup,
   CInputGroupText,
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
+import { cilLockLocked, cilEnvelopeClosed } from '@coreui/icons'
 import { Form, Formik } from 'formik'
 import { loginFormSchema } from '../../../schema'
+import axios from 'axios'
+import { baseUrl } from '../../../api/api'
+import AuthContext from '../../../context/AuthContext'
+import { useContext, useState } from 'react'
+import CustomInput from '../../../components/CustomInput/CustomInput'
 
 const Login = () => {
+  const { login } = useContext(AuthContext)
+  const navigate = useNavigate()
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (values) => {
+    try {
+      const response = await axios.post(`${baseUrl}/auth/login`, values)
+      const { token } = response.data
+      login(token)
+      navigate('/')
+    } catch (error) {
+      console.error('Login Failed:', error.response.data.message)
+      setError(error.response.data.message)
+    }
+  }
+
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -27,31 +46,28 @@ const Login = () => {
               <CCard className="p-4">
                 <CCardBody>
                   <Formik
-                    initialValues={{ fullname: '', password: '' }}
+                    initialValues={{ email: '', password: '' }}
                     validationSchema={loginFormSchema}
+                    onSubmit={handleSubmit}
                   >
                     <Form>
                       <h1>Login</h1>
                       <p className="text-body-secondary">Sign In to your account</p>
                       <CInputGroup className="mb-3">
                         <CInputGroupText>
-                          <CIcon icon={cilUser} />
+                          <CIcon icon={cilEnvelopeClosed} />
                         </CInputGroupText>
-                        <CFormInput placeholder="Username" autoComplete="username" />
+                        <CustomInput type="email" placeholder="Email" name="email" />
                       </CInputGroup>
                       <CInputGroup className="mb-4">
                         <CInputGroupText>
                           <CIcon icon={cilLockLocked} />
                         </CInputGroupText>
-                        <CFormInput
-                          type="password"
-                          placeholder="Password"
-                          autoComplete="current-password"
-                        />
+                        <CustomInput type="password" placeholder="Password" name="password" />
                       </CInputGroup>
                       <CRow>
                         <CCol xs={6}>
-                          <CButton color="primary" className="px-4">
+                          <CButton color="primary" className="px-4" type="submit">
                             Login
                           </CButton>
                         </CCol>
@@ -69,10 +85,7 @@ const Login = () => {
                 <CCardBody className="text-center">
                   <div>
                     <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
+                    <p>Don't have an account yet?</p>
                     <Link to="/register">
                       <CButton color="primary" className="mt-3" active tabIndex={-1}>
                         Register Now!

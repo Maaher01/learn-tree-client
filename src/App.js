@@ -5,6 +5,9 @@ import { useSelector } from 'react-redux'
 import { CSpinner, useColorModes } from '@coreui/react'
 import './scss/style.scss'
 
+// Contexts
+import { AuthProvider } from './context/AuthContext'
+
 // We use those styles to show code examples, you should remove them in your application.
 import './scss/examples.scss'
 
@@ -43,12 +46,14 @@ const App = () => {
           </div>
         }
       >
-        <Routes>
-          <Route exact path="/login" name="Login Page" element={<Login />} />
-          <Route exact path="/register" name="Register Page" element={<Register />} />
-          <Route exact path="/404" name="Page 404" element={<Page404 />} />
-          <Route path="*" name="Home" element={<DefaultLayout />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route exact path="/login" name="Login Page" element={<Login />} />
+            <Route exact path="/register" name="Register Page" element={<Register />} />
+            <Route exact path="/404" name="Page 404" element={<Page404 />} />
+            <Route path="*" name="Home" element={<DefaultLayout />} />
+          </Routes>
+        </AuthProvider>
       </Suspense>
     </HashRouter>
   )
