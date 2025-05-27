@@ -23,17 +23,17 @@ import CustomInput from '../../../components/CustomInput/CustomInput'
 const Login = () => {
   const { login } = useContext(AuthContext)
   const navigate = useNavigate()
+
   const [error, setError] = useState('')
 
   const handleSubmit = async (values) => {
     try {
-      const response = await axios.post(`${baseUrl}/auth/login`, values)
-      const { token } = response.data
-      login(token)
+      await axios.post(`${baseUrl}/auth/login`, values, { withCredentials: true })
+      login()
       navigate('/')
     } catch (error) {
-      console.error('Login Failed:', error.response.data.message)
-      setError(error.response.data.message)
+      console.error('Login Failed:', error)
+      setError(error)
     }
   }
 
