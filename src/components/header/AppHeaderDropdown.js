@@ -9,26 +9,12 @@ import {
 } from '@coreui/react'
 import { cilUser, cilAccountLogout } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import axios from 'axios'
-import { baseUrl } from '../../api/api'
-
 import defaultAvatar from './../../assets/avatars/user.svg'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useContext } from 'react'
+import AuthContext from '../../context/AuthContext'
 
 const AppHeaderDropdown = () => {
-  const navigate = useNavigate()
-  const [error, setError] = useState('')
-
-  const handleLogout = async () => {
-    try {
-      await axios.post(`${baseUrl}/auth/logout`, {}, { withCredentials: true })
-      navigate('/')
-    } catch (error) {
-      console.error('Logout Failed:', error)
-      setError(error)
-    }
-  }
+  const { logout } = useContext(AuthContext)
 
   return (
     <CDropdown variant="nav-item">
@@ -41,7 +27,7 @@ const AppHeaderDropdown = () => {
           <CIcon icon={cilUser} className="me-2" />
           Profile
         </CDropdownItem>
-        <CDropdownItem component="button" onClick={handleLogout}>
+        <CDropdownItem component="button" onClick={logout}>
           <CIcon icon={cilAccountLogout} className="me-2" />
           Logout
         </CDropdownItem>

@@ -32,8 +32,8 @@ const Login = () => {
       login()
       navigate('/')
     } catch (error) {
-      console.error('Login Failed:', error)
-      setError(error)
+      console.error('Login Failed:', error.response.data.message)
+      setError(error.response.data.message)
     }
   }
 
