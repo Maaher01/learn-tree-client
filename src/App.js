@@ -10,6 +10,7 @@ import { AuthProvider } from './context/AuthContext'
 
 // We use those styles to show code examples, you should remove them in your application.
 import './scss/examples.scss'
+import ProtectedRoute from './components/ProtectedRoute'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -48,10 +49,12 @@ const App = () => {
       >
         <AuthProvider>
           <Routes>
-            <Route exact path="/login" name="Login Page" element={<Login />} />
-            <Route exact path="/register" name="Register Page" element={<Register />} />
-            <Route exact path="/404" name="Page 404" element={<Page404 />} />
-            <Route path="*" name="Home" element={<DefaultLayout />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/*" element={<DefaultLayout />} />
+            </Route>
+            <Route path="*" element={<Page404 />} />
           </Routes>
         </AuthProvider>
       </Suspense>

@@ -13,11 +13,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get(
-          `${baseUrl}/auth/refreshtoken`,
-          {},
-          { withCredentials: true },
-        )
+        const response = await axios.get(`${baseUrl}/auth/refreshtoken`, { withCredentials: true })
         if (response?.data?.token) {
           setIsLoggedIn(true)
         } else {

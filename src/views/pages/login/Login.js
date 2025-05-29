@@ -26,7 +26,7 @@ const Login = () => {
 
   const [error, setError] = useState('')
 
-  const handleSubmit = async (values) => {
+  const handleLogin = async (values) => {
     try {
       await axios.post(`${baseUrl}/auth/login`, values, { withCredentials: true })
       login()
@@ -48,7 +48,7 @@ const Login = () => {
                   <Formik
                     initialValues={{ email: '', password: '' }}
                     validationSchema={loginFormSchema}
-                    onSubmit={handleSubmit}
+                    onSubmit={handleLogin}
                   >
                     <Form>
                       <h1>Login</h1>
