@@ -16,8 +16,7 @@ import { registerFormSchema } from '../../../schema'
 import { Form, Formik, Field } from 'formik'
 import CustomInput from '../../../components/CustomInput/CustomInput'
 import { useNavigate, Link } from 'react-router-dom'
-import { baseUrl } from '../../../api/api'
-import axios from 'axios'
+import { api } from '../../../api/api'
 import { useState } from 'react'
 
 const Register = () => {
@@ -26,11 +25,11 @@ const Register = () => {
 
   const handleRegister = async (values) => {
     try {
-      await axios.post(`${baseUrl}/auth/register`, values)
+      await api.post(`/auth/register`, values)
       navigate('/login')
     } catch (error) {
-      console.error('Registration Failed:', error)
-      setError(error)
+      console.error('Registration Failed:', error.response.data.message)
+      setError(error.response.data.message)
     }
   }
 

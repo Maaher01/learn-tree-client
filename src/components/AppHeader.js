@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react'
-import { NavLink } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CContainer,
@@ -13,9 +12,10 @@ import {
   CNavLink,
   CNavItem,
   useColorModes,
+  CTooltip,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilContrast, cilMenu, cilMoon, cilSun } from '@coreui/icons'
+import { cilContrast, cilMenu, cilMoon, cilSun, cilPlus } from '@coreui/icons'
 
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
@@ -43,14 +43,23 @@ const AppHeader = () => {
         >
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
-        <CHeaderNav className="d-none d-md-flex">
+        {/* <CHeaderNav className="d-none d-md-flex">
           <CNavItem>
             <CNavLink to="/dashboard" as={NavLink}>
               Dashboard
             </CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink href="#">Users</CNavLink>
+            <CNavLink href="#">People</CNavLink>
+          </CNavItem>
+        </CHeaderNav> */}
+        <CHeaderNav className="ms-auto">
+          <CNavItem>
+            <CNavLink href="#">
+              <CTooltip content="Join Class" placement="bottom">
+                <CIcon icon={cilPlus} size="xl" style={{ color: 'black' }} />
+              </CTooltip>
+            </CNavLink>
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav>

@@ -9,13 +9,13 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
+  CAlert,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilEnvelopeClosed } from '@coreui/icons'
 import { Form, Formik } from 'formik'
 import { loginFormSchema } from '../../../schema'
-import axios from 'axios'
-import { baseUrl } from '../../../api/api'
+import { api } from '../../../api/api'
 import AuthContext from '../../../context/AuthContext'
 import { useContext, useState } from 'react'
 import CustomInput from '../../../components/CustomInput/CustomInput'
@@ -28,7 +28,8 @@ const Login = () => {
 
   const handleLogin = async (values) => {
     try {
-      await axios.post(`${baseUrl}/auth/login`, values, { withCredentials: true })
+      await api.post(`/auth/login`, values)
+
       login()
       navigate('/')
     } catch (error) {
@@ -65,6 +66,7 @@ const Login = () => {
                         </CInputGroupText>
                         <CustomInput type="password" placeholder="Password" name="password" />
                       </CInputGroup>
+                      {error && <CAlert color="danger">{error}</CAlert>}
                       <CRow>
                         <CCol xs={6}>
                           <CButton color="primary" className="px-4" type="submit">

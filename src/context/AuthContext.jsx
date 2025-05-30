@@ -1,7 +1,6 @@
 import { createContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { baseUrl } from '../api/api'
+import { api } from '../api/api'
 
 const AuthContext = createContext({})
 
@@ -13,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/auth/refreshtoken`, { withCredentials: true })
+        const response = await api.get(`/auth/refreshtoken`)
         if (response?.data?.token) {
           setIsLoggedIn(true)
         } else {
@@ -35,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post(`${baseUrl}/auth/logout`, {}, { withCredentials: true })
+      await api.post(`/auth/logout`)
       setIsLoggedIn(false)
       navigate('/')
     } catch (err) {

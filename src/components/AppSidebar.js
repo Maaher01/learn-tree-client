@@ -1,15 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import {
-  CCloseButton,
-  CSidebar,
-  CSidebarBrand,
-  CSidebarFooter,
-  CSidebarHeader,
-  CSidebarToggler,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
+import { CCloseButton, CSidebar, CSidebarBrand, CSidebarHeader } from '@coreui/react'
 
 import { AppSidebarNav } from './AppSidebarNav'
 
