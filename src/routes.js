@@ -1,10 +1,12 @@
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const SubjectDetails = React.lazy(() => import('./views/pages/subjectDetails/SubjectDetails'))
 
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', exact: true, name: 'Classes', element: Dashboard },
+  { path: '/', name: 'Home' },
+  { path: '/dashboard', name: 'Classes', element: Dashboard },
+  { path: '/class/details/:subject_id', name: 'Class Details', element: SubjectDetails },
 ]
 
 export default routes

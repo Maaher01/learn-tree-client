@@ -21,11 +21,12 @@ import CIcon from '@coreui/icons-react'
 import { cilOptions } from '@coreui/icons'
 import { useEffect, useState } from 'react'
 import { api } from '../../api/api'
+import { Link } from 'react-router-dom'
 
 const SubjectCards = (props) => {
   const [error, setError] = useState('')
   const [subjects, setSubjects] = useState([])
-  const [showModal, setShowModal] = useState(false)
+  const [selectedSubject, setSelectedSubject] = useState(null)
 
   useEffect(() => {
     getAllUserSubjects()
@@ -37,6 +38,17 @@ const SubjectCards = (props) => {
       setSubjects(response.data.data)
     } catch (error) {
       console.error('Error fetching user subjects', error)
+      setError(error)
+    }
+  }
+
+  const deleteEnrollemnt = async (subject_id) => {
+    try {
+      await api.delete(`/subject-enrollment/delete-subject-enrollment`, { data: { subject_id } })
+      setSelectedSubject(null)
+      getAllUserSubjects()
+    } catch (error) {
+      console.error('Error deleting enrollment', error)
       setError(error)
     }
   }
@@ -54,31 +66,35 @@ const SubjectCards = (props) => {
           subjects.map((subject, index) => (
             <CCol sm={6} xl={4} xxl={3} key={index}>
               <CCard style={{ height: '239px', cursor: 'pointer' }}>
-                <CCardImage orientation="top" src={images[index % images.length]} height={100} />
-                <CCardImageOverlay className="text-white">
-                  <div className="d-flex justify-content-between">
-                    <CCardTitle className="fs-4 mb-0">
-                      {subject.subject_name + ' ' + subject.class_name}
-                    </CCardTitle>
-                    <CDropdown alignment="start">
-                      <CDropdownToggle
-                        variant="ghost"
-                        caret={false}
-                        className="p-0 bg-transparent border-0"
-                        style={{
-                          zIndex: 10,
-                        }}
-                      >
-                        <CIcon icon={cilOptions} className="text-white" />
-                      </CDropdownToggle>
-                      <CDropdownMenu>
-                        <CDropdownItem onClick={() => setShowModal(!showModal)}>
-                          Unenroll
-                        </CDropdownItem>
-                      </CDropdownMenu>
-                    </CDropdown>
-                  </div>
-                </CCardImageOverlay>
+                <Link to={`/class/details/${subject.subject_id}`}>
+                  <CCardImage orientation="top" src={images[index % images.length]} height={100} />
+                  <CCardImageOverlay className="text-white">
+                    <div className="d-flex justify-content-between">
+                      <CCardTitle className="fs-4 mb-0">
+                        {(subject.subject_name + ' ' + subject.class_name).length >= 17
+                          ? (subject.subject_name + ' ' + subject.class_name).slice(0, 17) + '...'
+                          : subject.subject_name + ' ' + subject.class_name}
+                      </CCardTitle>
+                    </div>
+                  </CCardImageOverlay>
+                </Link>
+                <CDropdown alignment="start" className="position-absolute top-0 end-0 m-3">
+                  <CDropdownToggle
+                    variant="ghost"
+                    caret={false}
+                    className="p-0 bg-transparent border-0"
+                    style={{
+                      zIndex: 10,
+                    }}
+                  >
+                    <CIcon icon={cilOptions} className="text-white" />
+                  </CDropdownToggle>
+                  <CDropdownMenu>
+                    <CDropdownItem onClick={() => setSelectedSubject(subject)}>
+                      Unenroll
+                    </CDropdownItem>
+                  </CDropdownMenu>
+                </CDropdown>
               </CCard>
             </CCol>
           ))
@@ -89,7 +105,7 @@ const SubjectCards = (props) => {
           >
             <img src="src/assets/images/empty_states_home.svg" />
             <p className="mt-4 fw-bolder text-secondary">No classes to show</p>
-            <CButton color="info" className="text-light fw-bolder">
+            <CButton color="primary" className="text-light fw-bolder">
               Join Class
             </CButton>
           </div>
@@ -98,41 +114,25 @@ const SubjectCards = (props) => {
       <CModal
         alignment="center"
         scrollable
-        visible={showModal}
-        onClose={() => setShowModal(false)}
+        visible={!!selectedSubject}
+        onClose={() => setSelectedSubject(null)}
         aria-labelledby="VerticallyCenteredScrollableExample2"
       >
         <CModalHeader>
-          <CModalTitle id="VerticallyCenteredScrollableExample2">Modal title</CModalTitle>
+          <CModalTitle id="VerticallyCenteredScrollableExample2">
+            Unenroll from {selectedSubject?.subject_name} {selectedSubject?.class_name}?
+          </CModalTitle>
         </CModalHeader>
         <CModalBody>
-          <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-            in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-          </p>
-          <p>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-            lacus vel augue laoreet rutrum faucibus dolor auctor.
-          </p>
-          <p>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-            scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-            auctor fringilla.
-          </p>
-          <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-            in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-          </p>
-          <p>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-            lacus vel augue laoreet rutrum faucibus dolor auctor.
-          </p>
+          <p>You will be removed from this class.</p>
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setVisible(false)}>
-            Close
+          <CButton color="secondary" onClick={() => setSelectedSubject(null)}>
+            Cancel
           </CButton>
-          <CButton color="primary">Save changes</CButton>
+          <CButton color="primary" onClick={() => deleteEnrollemnt(selectedSubject?.subject_id)}>
+            Unenroll
+          </CButton>
         </CModalFooter>
       </CModal>
     </>
