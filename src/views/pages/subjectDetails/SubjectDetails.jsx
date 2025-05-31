@@ -12,6 +12,8 @@ import {
   CTab,
   CTabContent,
   CTabPanel,
+  CListGroup,
+  CListGroupItem,
 } from '@coreui/react'
 
 const SubjectDetails = () => {
@@ -50,7 +52,7 @@ const SubjectDetails = () => {
 
   return (
     <>
-      <CTabs defaultActiveItemKey={2}>
+      <CTabs defaultActiveItemKey={1}>
         <CTabList variant="underline-border">
           <CTab aria-controls="stream-tab-pane" itemKey={1}>
             Stream
@@ -71,7 +73,9 @@ const SubjectDetails = () => {
             </CCard>
           </CTabPanel>
           <CTabPanel className="p-3" aria-labelledby="people-tab-pane" itemKey={2}>
-            People tab content
+            <CListGroup>
+              <CListGroupItem>Cras justo odio</CListGroupItem>
+            </CListGroup>
           </CTabPanel>
         </CTabContent>
       </CTabs>
