@@ -14,15 +14,18 @@ import {
   CTabPanel,
   CListGroup,
   CListGroupItem,
-  CButton,
+  CTooltip,
 } from '@coreui/react'
 import AuthContext from '../../../context/AuthContext'
+import { cilEnvelopeClosed } from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
 
 const SubjectDetails = () => {
   const [className, setClassName] = useState('')
   const [subjectName, setSubjectName] = useState('')
   const [error, setError] = useState('')
   const [people, setPeople] = useState([])
+  const [questions, setQuestions] = useState([])
 
   const { user } = useContext(AuthContext)
 
@@ -36,10 +39,9 @@ const SubjectDetails = () => {
 
   const getSubjectDetails = async () => {
     try {
-      const response = await api.get(`/subject/get-subject-details/${class_id}/${subject_id}`)
+      const response = await api.get(`subject/get-subject-details/${class_id}/${subject_id}`)
       setClassName(response.data.data.class_name)
       setSubjectName(response.data.data.subject_name)
-      console.log(response.data.data)
     } catch (error) {
       console.error('Error fetching subject details', error)
       setError(error)
@@ -48,7 +50,7 @@ const SubjectDetails = () => {
 
   const getAllEnrolledPeople = async () => {
     try {
-      const response = await api.get(`subject-enrollment/${class_id}/${subject_id}`)
+      const response = await api.get(`subject-enrollment/get-all-people/${subject_id}`)
       setPeople(response.data.data)
     } catch (error) {
       console.error('Error fetching people', error)
@@ -61,6 +63,7 @@ const SubjectDetails = () => {
       const response = await api.get(
         `question/get-all-questions-by-class-subject/${class_id}/${subject_id}`,
       )
+      setQuestions(response.data.data)
     } catch (error) {
       console.error('Error fetching questions', error)
       setError(error)
@@ -75,7 +78,7 @@ const SubjectDetails = () => {
             Stream
           </CTab>
           {user.role === 'Admin' ? (
-            <CTab aria-controls="stream-tab-pane" itemKey={2}>
+            <CTab aria-controls="quiz-tab-pane" itemKey={2}>
               Create Quiz
             </CTab>
           ) : null}
@@ -95,16 +98,22 @@ const SubjectDetails = () => {
               </CCardImageOverlay>
             </CCard>
           </CTabPanel>
+          <CTabPanel className="p-3" aria-labelledby="quiz-tab-pane" itemKey={2}></CTabPanel>
           <CTabPanel className="p-3" aria-labelledby="people-tab-pane" itemKey={3}>
             <CListGroup className="mt-2">
               <h1>Teachers</h1>
               {people
                 .filter((peep) => peep.role === 'Admin')
                 .map((peep, index) => (
-                  <CListGroupItem key={index}>
-                    <div className="d-flex justify-content-between gap-2 text-secondary fw-semibold">
-                      <div>{peep.fullname}</div>
-                      <div>Email: {peep.email}</div>
+                  <CListGroupItem
+                    className="d-flex justify-content-between gap-2 text-secondary fw-semibold mt-2"
+                    key={index}
+                  >
+                    <div>{peep.fullname}</div>
+                    <div className="d-flex gap-2" style={{ cursor: 'pointer' }}>
+                      <CTooltip content={`Email ${peep.email}`} placement="bottom">
+                        <CIcon size="xl" icon={cilEnvelopeClosed} />
+                      </CTooltip>
                     </div>
                   </CListGroupItem>
                 ))}
@@ -114,13 +123,15 @@ const SubjectDetails = () => {
               {people
                 .filter((peep) => peep.role === 'Student')
                 .map((peep, index) => (
-                  <CListGroupItem className="d-flex justify-content-between" key={index}>
-                    <div className="d-flex justify-content-between">
-                      <div className="name-email d-flex gap-2">
-                        <div>{peep.fullname}</div>
-                        <div>({peep.email})</div>
-                      </div>
-                      <div className="role">{peep.role}</div>
+                  <CListGroupItem
+                    className="d-flex justify-content-between gap-2 text-secondary fw-semibold mt-2"
+                    key={index}
+                  >
+                    <div>{peep.fullname}</div>
+                    <div className="d-flex gap-2" style={{ cursor: 'pointer' }}>
+                      <CTooltip content={`Email ${peep.email}`} placement="bottom">
+                        <CIcon size="xl" icon={cilEnvelopeClosed} />
+                      </CTooltip>
                     </div>
                   </CListGroupItem>
                 ))}

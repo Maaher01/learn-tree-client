@@ -55,7 +55,7 @@ const AppHeader = () => {
         </CHeaderNav> */}
         <CHeaderNav className="ms-auto">
           <CNavItem>
-            <CNavLink href="#">
+            <CNavLink>
               <CTooltip content="Join Class" placement="bottom">
                 <CIcon icon={cilPlus} size="xl" style={{ color: 'black' }} />
               </CTooltip>
