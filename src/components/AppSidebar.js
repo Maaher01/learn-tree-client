@@ -7,6 +7,7 @@ import { AppSidebarNav } from './AppSidebarNav'
 
 // sidebar nav config
 import navigation from '../_nav'
+import { Link } from 'react-router-dom'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
@@ -25,9 +26,11 @@ const AppSidebar = () => {
       }}
     >
       <CSidebarHeader className="border-bottom">
-        <CSidebarBrand to="/">
-          <img src="src/assets/brand/learn-tree-logo.png" width={200} height={55} />
-        </CSidebarBrand>
+        {/* <CSidebarBrand > */}
+        <Link style={{ cursor: 'pointer' }} to="/">
+          <img src="src/assets/brand/learn-tree-logo.png" width={200} height={65} />
+        </Link>
+        {/* </CSidebarBrand> */}
         <CCloseButton
           className="d-lg-none"
           dark

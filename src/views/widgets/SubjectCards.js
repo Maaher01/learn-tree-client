@@ -36,6 +36,7 @@ const SubjectCards = (props) => {
     try {
       const response = await api.get(`/subject-enrollment/get-all-subjects`)
       setSubjects(response.data.data)
+      console.log(response.data.data)
     } catch (error) {
       console.error('Error fetching user subjects', error)
       setError(error)
@@ -66,7 +67,7 @@ const SubjectCards = (props) => {
           subjects.map((subject, index) => (
             <CCol sm={6} xl={4} xxl={3} key={index}>
               <CCard style={{ height: '239px', cursor: 'pointer' }}>
-                <Link to={`/class/details/${subject.subject_id}`}>
+                <Link to={`/class/details/${subject.class_id}/${subject.subject_id}`}>
                   <CCardImage orientation="top" src={images[index % images.length]} height={100} />
                   <CCardImageOverlay className="text-white">
                     <div className="d-flex justify-content-between">

@@ -8,29 +8,11 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState(null)
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await api.get(`/auth/refreshtoken`)
-        if (response?.data?.token) {
-          setIsLoggedIn(true)
-        } else {
-          setIsLoggedIn(false)
-        }
-      } catch (err) {
-        setIsLoggedIn(false)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     checkAuth()
   }, [])
-
-  const login = () => {
-    setIsLoggedIn(true)
-  }
 
   const logout = async () => {
     try {
@@ -42,8 +24,24 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const checkAuth = async () => {
+    try {
+      const response = await api.get(`/auth/refreshtoken`)
+      if (response?.data?.token) {
+        setIsLoggedIn(true)
+        setUser(response.data.user)
+      } else {
+        setIsLoggedIn(false)
+      }
+    } catch (err) {
+      setIsLoggedIn(false)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, loading }}>
+    <AuthContext.Provider value={{ isLoggedIn, logout, loading, user, checkAuth }}>
       {children}
     </AuthContext.Provider>
   )

@@ -6,7 +6,7 @@ const SubjectDetails = React.lazy(() => import('./views/pages/subjectDetails/Sub
 const routes = [
   { path: '/', name: 'Home' },
   { path: '/dashboard', name: 'Classes', element: Dashboard },
-  { path: '/class/details/:subject_id', name: 'Class Details', element: SubjectDetails },
+  { path: '/class/details/:class_id/:subject_id', name: 'Class Details', element: SubjectDetails },
 ]
 
 export default routes

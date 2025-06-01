@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { api } from '../../../api/api'
 import {
@@ -14,7 +14,9 @@ import {
   CTabPanel,
   CListGroup,
   CListGroupItem,
+  CButton,
 } from '@coreui/react'
+import AuthContext from '../../../context/AuthContext'
 
 const SubjectDetails = () => {
   const [className, setClassName] = useState('')
@@ -22,18 +24,22 @@ const SubjectDetails = () => {
   const [error, setError] = useState('')
   const [people, setPeople] = useState([])
 
-  const { subject_id } = useParams()
+  const { user } = useContext(AuthContext)
+
+  const { class_id, subject_id } = useParams()
 
   useEffect(() => {
     getSubjectDetails()
     getAllEnrolledPeople()
-  }, [subject_id])
+    getAllQuestionsByClassSubject()
+  }, [class_id, subject_id])
 
   const getSubjectDetails = async () => {
     try {
-      const response = await api.get(`/subject/get-subject-details/${subject_id}`)
+      const response = await api.get(`/subject/get-subject-details/${class_id}/${subject_id}`)
       setClassName(response.data.data.class_name)
       setSubjectName(response.data.data.subject_name)
+      console.log(response.data.data)
     } catch (error) {
       console.error('Error fetching subject details', error)
       setError(error)
@@ -42,10 +48,21 @@ const SubjectDetails = () => {
 
   const getAllEnrolledPeople = async () => {
     try {
-      const response = await api.get(`subject-enrollment/get-all-students/${subject_id}`)
+      const response = await api.get(`subject-enrollment/${class_id}/${subject_id}`)
       setPeople(response.data.data)
     } catch (error) {
       console.error('Error fetching people', error)
+      setError(error)
+    }
+  }
+
+  const getAllQuestionsByClassSubject = async () => {
+    try {
+      const response = await api.get(
+        `question/get-all-questions-by-class-subject/${class_id}/${subject_id}`,
+      )
+    } catch (error) {
+      console.error('Error fetching questions', error)
       setError(error)
     }
   }
@@ -57,7 +74,13 @@ const SubjectDetails = () => {
           <CTab aria-controls="stream-tab-pane" itemKey={1}>
             Stream
           </CTab>
-          <CTab aria-controls="people-tab-pane" itemKey={2}>
+          {user.role === 'Admin' ? (
+            <CTab aria-controls="stream-tab-pane" itemKey={2}>
+              Create Quiz
+            </CTab>
+          ) : null}
+
+          <CTab aria-controls="people-tab-pane" itemKey={3}>
             People
           </CTab>
         </CTabList>
@@ -72,9 +95,35 @@ const SubjectDetails = () => {
               </CCardImageOverlay>
             </CCard>
           </CTabPanel>
-          <CTabPanel className="p-3" aria-labelledby="people-tab-pane" itemKey={2}>
-            <CListGroup>
-              <CListGroupItem>Cras justo odio</CListGroupItem>
+          <CTabPanel className="p-3" aria-labelledby="people-tab-pane" itemKey={3}>
+            <CListGroup className="mt-2">
+              <h1>Teachers</h1>
+              {people
+                .filter((peep) => peep.role === 'Admin')
+                .map((peep, index) => (
+                  <CListGroupItem key={index}>
+                    <div className="d-flex justify-content-between gap-2 text-secondary fw-semibold">
+                      <div>{peep.fullname}</div>
+                      <div>Email: {peep.email}</div>
+                    </div>
+                  </CListGroupItem>
+                ))}
+            </CListGroup>
+            <CListGroup className="mt-5">
+              <h1>Students</h1>
+              {people
+                .filter((peep) => peep.role === 'Student')
+                .map((peep, index) => (
+                  <CListGroupItem className="d-flex justify-content-between" key={index}>
+                    <div className="d-flex justify-content-between">
+                      <div className="name-email d-flex gap-2">
+                        <div>{peep.fullname}</div>
+                        <div>({peep.email})</div>
+                      </div>
+                      <div className="role">{peep.role}</div>
+                    </div>
+                  </CListGroupItem>
+                ))}
             </CListGroup>
           </CTabPanel>
         </CTabContent>

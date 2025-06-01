@@ -21,7 +21,7 @@ import { useContext, useState } from 'react'
 import CustomInput from '../../../components/CustomInput/CustomInput'
 
 const Login = () => {
-  const { login } = useContext(AuthContext)
+  const { checkAuth } = useContext(AuthContext)
   const navigate = useNavigate()
 
   const [error, setError] = useState('')
@@ -29,12 +29,11 @@ const Login = () => {
   const handleLogin = async (values) => {
     try {
       await api.post(`/auth/login`, values)
-
-      login()
+      await checkAuth()
       navigate('/')
     } catch (error) {
-      console.error('Login Failed:', error.response.data.message)
-      setError(error.response.data.message)
+      console.error('Login Failed:', error)
+      setError(error)
     }
   }
 
