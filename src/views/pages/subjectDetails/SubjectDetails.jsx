@@ -15,6 +15,11 @@ import {
   CListGroup,
   CListGroupItem,
   CTooltip,
+  CCardBody,
+  CCardSubtitle,
+  CContainer,
+  CRow,
+  CCol,
 } from '@coreui/react'
 import AuthContext from '../../../context/AuthContext'
 import { cilEnvelopeClosed } from '@coreui/icons'
@@ -63,6 +68,8 @@ const SubjectDetails = () => {
       const response = await api.get(
         `question/get-all-questions-by-class-subject/${class_id}/${subject_id}`,
       )
+      console.log(response.data.data)
+
       setQuestions(response.data.data)
     } catch (error) {
       console.error('Error fetching questions', error)
@@ -98,7 +105,44 @@ const SubjectDetails = () => {
               </CCardImageOverlay>
             </CCard>
           </CTabPanel>
-          <CTabPanel className="p-3" aria-labelledby="quiz-tab-pane" itemKey={2}></CTabPanel>
+          <CTabPanel className="p-3" aria-labelledby="quiz-tab-pane" itemKey={2}>
+            <CContainer>
+              <CRow>
+                <CCol sm="auto">
+                  <h1>Question Bank</h1>
+                  {questions.map((qa, index) => (
+                    <CCard
+                      style={{ width: '30rem', cursor: 'pointer' }}
+                      className="mt-4"
+                      key={index}
+                    >
+                      <CCardBody>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <CCardTitle>{qa.question_text}</CCardTitle>
+                          <CCardSubtitle className="mb-2 text-body-secondary">
+                            Full Marks: {qa.full_marks}
+                          </CCardSubtitle>
+                        </div>
+                        {qa.options.map((op, index) => (
+                          <CContainer key={index}>
+                            <CRow>
+                              <CCol xs={6}>{op.option_text}</CCol>
+                            </CRow>
+                          </CContainer>
+                        ))}
+                      </CCardBody>
+                    </CCard>
+                  ))}
+                </CCol>
+                <CCol sm="auto">
+                  <h1>Quiz Paper</h1>
+                  <CCard style={{ width: '40rem' }} className="mt-4">
+                    <CCardBody>This is some text within a card body.</CCardBody>
+                  </CCard>
+                </CCol>
+              </CRow>
+            </CContainer>
+          </CTabPanel>
           <CTabPanel className="p-3" aria-labelledby="people-tab-pane" itemKey={3}>
             <CListGroup className="mt-2">
               <h1>Teachers</h1>

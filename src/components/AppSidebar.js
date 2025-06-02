@@ -26,11 +26,9 @@ const AppSidebar = () => {
       }}
     >
       <CSidebarHeader className="border-bottom">
-        {/* <CSidebarBrand > */}
         <Link style={{ cursor: 'pointer' }} to="/">
           <img src="src/assets/brand/learn-tree-logo.png" width={200} height={65} />
         </Link>
-        {/* </CSidebarBrand> */}
         <CCloseButton
           className="d-lg-none"
           dark

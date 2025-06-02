@@ -85,7 +85,8 @@ const Login = () => {
               <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
                 <CCardBody className="text-center">
                   <div>
-                    <h2>Sign up</h2>
+                    <img src="src/assets/brand/learn-tree-favicon.png" width={100} height={75} />
+                    <h2 className="mt-2">Sign up</h2>
                     <p>Don't have an account yet?</p>
                     <Link to="/register">
                       <CButton color="primary" className="mt-3" active tabIndex={-1}>
