@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   CContainer,
   CDropdown,
@@ -32,6 +32,7 @@ import { Form, Formik, Field } from 'formik'
 import { api } from '../api/api'
 
 import { AppHeaderDropdown } from './header/index'
+import SubjectContext from '../context/SubjectContext'
 
 const AppHeader = () => {
   const [showEnrollModal, setShowEnrollModal] = useState(false)
@@ -41,7 +42,10 @@ const AppHeader = () => {
   const [classId, setClassId] = useState()
   const [subjects, setSubjects] = useState([])
 
+  const { getAllUserSubjects } = useContext(SubjectContext)
+
   const location = useLocation()
+  const navigate = useNavigate()
 
   const headerRef = useRef()
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
@@ -79,6 +83,17 @@ const AppHeader = () => {
       setSubjects(response.data.data)
     } catch (error) {
       console.error('Error fetching subjects', error)
+      setError(error)
+    }
+  }
+
+  const handleCreateEnrollment = async (values) => {
+    try {
+      await api.post(`subject-enrollment/create-subject-enrollment`, values)
+      getAllUserSubjects()
+      navigate('/')
+    } catch (error) {
+      console.error('Error enrolling', error)
       setError(error)
     }
   }
@@ -155,26 +170,23 @@ const AppHeader = () => {
             <AppHeaderDropdown />
           </CHeaderNav>
         </CContainer>
-        <CContainer className="px-4" fluid>
-          {/* <AppBreadcrumb /> */}
-        </CContainer>
       </CHeader>
-      <CModal
-        alignment="center"
-        visible={showEnrollModal}
-        onClose={() => setShowEnrollModal(false)}
+      <Formik
+        initialValues={{
+          subject_id: '',
+        }}
+        onSubmit={handleCreateEnrollment}
       >
-        <CModalHeader>
-          <CModalTitle>Join Class</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          <Formik
-            initialValues={{
-              class: '',
-              subject: '',
-            }}
-          >
-            <Form className="d-flex flex-column gap-3">
+        <CModal
+          alignment="center"
+          visible={showEnrollModal}
+          onClose={() => setShowEnrollModal(false)}
+        >
+          <Form>
+            <CModalHeader>
+              <CModalTitle>Join Class</CModalTitle>
+            </CModalHeader>
+            <CModalBody className="d-flex flex-column gap-3">
               <CCard>
                 <CCardBody>
                   <CCardSubtitle>Choose Your Class</CCardSubtitle>
@@ -194,8 +206,8 @@ const AppHeader = () => {
                 <CCardBody>
                   <CCardSubtitle>Choose Your Subject</CCardSubtitle>
                   <CInputGroup className="mb-4 mt-3">
-                    <Field as={CFormSelect} name="subject" disabled={!classSelected}>
-                      <option value="0">Select your class</option>
+                    <Field as={CFormSelect} name="subject_id" disabled={!classSelected}>
+                      <option value="0">Select your subject</option>
                       {subjects.map((sub) => (
                         <option key={sub.subject_id} value={sub.subject_id}>
                           {sub.subject_name}
@@ -205,16 +217,18 @@ const AppHeader = () => {
                   </CInputGroup>
                 </CCardBody>
               </CCard>
-            </Form>
-          </Formik>
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setShowEnrollModal(false)}>
-            Cancel
-          </CButton>
-          <CButton color="primary">Join</CButton>
-        </CModalFooter>
-      </CModal>
+            </CModalBody>
+            <CModalFooter>
+              <CButton color="secondary" onClick={() => setShowEnrollModal(false)}>
+                Cancel
+              </CButton>
+              <CButton color="primary" type="submit" onClick={() => setShowEnrollModal(false)}>
+                Join
+              </CButton>
+            </CModalFooter>
+          </Form>
+        </CModal>
+      </Formik>
     </>
   )
 }

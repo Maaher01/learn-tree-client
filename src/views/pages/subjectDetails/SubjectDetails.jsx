@@ -20,10 +20,15 @@ import {
   CContainer,
   CRow,
   CCol,
+  CButton,
+  CAvatar,
 } from '@coreui/react'
+import defaultAvatar from '../../../assets/avatars/user.svg'
 import AuthContext from '../../../context/AuthContext'
-import { cilEnvelopeClosed } from '@coreui/icons'
+import { cilEnvelopeClosed, cilPlus } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
+import ReactQuill from 'react-quill-new'
+import 'react-quill-new/dist/quill.snow.css'
 
 const SubjectDetails = () => {
   const [className, setClassName] = useState('')
@@ -31,6 +36,14 @@ const SubjectDetails = () => {
   const [error, setError] = useState('')
   const [people, setPeople] = useState([])
   const [questions, setQuestions] = useState([])
+  const [activeTab, setActiveTab] = useState(() => {
+    return parseInt(localStorage.getItem('activeSubjectTab')) || 1
+  })
+  const [showPostForm, setShowPostForm] = useState(false)
+
+  const modules = {
+    toolbar: [['bold', 'italic', 'underline'], [{ list: 'bullet' }], ['link']],
+  }
 
   const { user } = useContext(AuthContext)
 
@@ -68,8 +81,6 @@ const SubjectDetails = () => {
       const response = await api.get(
         `question/get-all-questions-by-class-subject/${class_id}/${subject_id}`,
       )
-      console.log(response.data.data)
-
       setQuestions(response.data.data)
     } catch (error) {
       console.error('Error fetching questions', error)
@@ -79,7 +90,13 @@ const SubjectDetails = () => {
 
   return (
     <>
-      <CTabs defaultActiveItemKey={1}>
+      <CTabs
+        activeItemKey={activeTab}
+        onChange={(key) => {
+          setActiveTab(key)
+          localStorage.setItem('activeSubjectTab', key)
+        }}
+      >
         <CTabList variant="underline-border">
           <CTab aria-controls="stream-tab-pane" itemKey={1}>
             Stream
@@ -104,40 +121,83 @@ const SubjectDetails = () => {
                 <CCardText></CCardText>
               </CCardImageOverlay>
             </CCard>
+            {!showPostForm ? (
+              <CCard className=" px-3" style={{ cursor: 'pointer' }}>
+                <CButton
+                  className="d-flex flex-row align-items-center"
+                  onClick={() => setShowPostForm(true)}
+                >
+                  <CAvatar src={defaultAvatar} size="md" />
+                  <CCardBody className="text-secondary fw-semibold text-start">
+                    Anounce Something to your class...
+                  </CCardBody>
+                </CButton>
+              </CCard>
+            ) : (
+              <CCard className="p-4 d-flex flex-column gap-5">
+                <ReactQuill
+                  theme="snow"
+                  modules={modules}
+                  style={{ backgroundColor: 'white', height: '175px' }}
+                />
+                <div className="buttons d-flex gap-4 justify-content-end mt-4">
+                  <CButton
+                    variant="ghost"
+                    className="fw-medium"
+                    style={{ color: '#4B49B6' }}
+                    onClick={() => setShowPostForm(false)}
+                  >
+                    Cancel
+                  </CButton>
+                  <CButton color="primary" type="submit">
+                    Post
+                  </CButton>
+                </div>
+              </CCard>
+            )}
           </CTabPanel>
           <CTabPanel className="p-3" aria-labelledby="quiz-tab-pane" itemKey={2}>
             <CContainer>
-              <CRow>
-                <CCol sm="auto">
+              <CRow className="d-flex">
+                <CCol sm="auto" style={{ width: '30%' }}>
                   <h1>Question Bank</h1>
-                  {questions.map((qa, index) => (
-                    <CCard
-                      style={{ width: '30rem', cursor: 'pointer' }}
-                      className="mt-4"
-                      key={index}
-                    >
-                      <CCardBody>
-                        <div className="d-flex justify-content-between align-items-center">
-                          <CCardTitle>{qa.question_text}</CCardTitle>
-                          <CCardSubtitle className="mb-2 text-body-secondary">
-                            Full Marks: {qa.full_marks}
-                          </CCardSubtitle>
-                        </div>
-                        {qa.options.map((op, index) => (
-                          <CContainer key={index}>
-                            <CRow>
-                              <CCol xs={6}>{op.option_text}</CCol>
-                            </CRow>
-                          </CContainer>
-                        ))}
+                  <CButton color="primary mt-3 d-flex gap-1 align-items-center">
+                    Create Question<CIcon icon={cilPlus}></CIcon>
+                  </CButton>
+                  {questions.length > 0 ? (
+                    questions.map((qa, index) => (
+                      <CCard style={{ cursor: 'pointer' }} className="mt-3" key={index}>
+                        <CCardBody>
+                          <div className="d-flex justify-content-between align-items-center">
+                            <CCardTitle>{qa.question_text}</CCardTitle>
+                            <CCardSubtitle className="mb-2 text-body-secondary">
+                              Full Marks: {qa.full_marks}
+                            </CCardSubtitle>
+                          </div>
+                          {qa.options.map((op, index) => (
+                            <CContainer key={index}>
+                              <CRow>
+                                <CCol xs={6}>{op.option_text}</CCol>
+                              </CRow>
+                            </CContainer>
+                          ))}
+                        </CCardBody>
+                      </CCard>
+                    ))
+                  ) : (
+                    <CCard className="mt-4">
+                      <CCardBody className="text-secondary fw-semibold">
+                        No questions created yet
                       </CCardBody>
                     </CCard>
-                  ))}
+                  )}
                 </CCol>
-                <CCol sm="auto">
+                <CCol sm="auto" style={{ width: '70%' }}>
                   <h1>Quiz Paper</h1>
-                  <CCard style={{ width: '40rem' }} className="mt-4">
-                    <CCardBody>This is some text within a card body.</CCardBody>
+                  <CCard className="mt-4">
+                    <CCardBody className="text-secondary fw-semibold">
+                      Drag questions and drop here to create paper
+                    </CCardBody>
                   </CCard>
                 </CCol>
               </CRow>

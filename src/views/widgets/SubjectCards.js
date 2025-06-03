@@ -19,28 +19,20 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilOptions } from '@coreui/icons'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { api } from '../../api/api'
 import { Link } from 'react-router-dom'
+import SubjectContext from '../../context/SubjectContext'
 
 const SubjectCards = (props) => {
   const [error, setError] = useState('')
-  const [subjects, setSubjects] = useState([])
   const [selectedSubject, setSelectedSubject] = useState(null)
+
+  const { getAllUserSubjects, subjects } = useContext(SubjectContext)
 
   useEffect(() => {
     getAllUserSubjects()
   }, [])
-
-  const getAllUserSubjects = async () => {
-    try {
-      const response = await api.get(`/subject-enrollment/get-all-subjects`)
-      setSubjects(response.data.data)
-    } catch (error) {
-      console.error('Error fetching user subjects', error)
-      setError(error)
-    }
-  }
 
   const deleteEnrollemnt = async (subject_id) => {
     try {
