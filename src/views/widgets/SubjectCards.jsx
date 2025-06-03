@@ -96,7 +96,7 @@ const SubjectCards = (props) => {
             style={{ height: '55vh' }}
           >
             <img src="src/assets/images/empty_states_home.svg" />
-            <p className="mt-4 fw-bolder text-secondary">No classes to show</p>
+            <p className="mt-4 mb-2 fw-bolder text-secondary">No classes to show</p>
             <CButton color="primary" className="text-light fw-bolder">
               Join Class
             </CButton>

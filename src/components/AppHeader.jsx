@@ -62,7 +62,7 @@ const AppHeader = () => {
     getAllClasses()
   }, [])
 
-  const shouldShowEnrollButton = location.pathname === '/dashboard'
+  const showEnrollButton = location.pathname === '/dashboard'
 
   const getAllClasses = async () => {
     try {
@@ -108,7 +108,7 @@ const AppHeader = () => {
           >
             <CIcon icon={cilMenu} size="lg" />
           </CHeaderToggler>
-          {shouldShowEnrollButton && (
+          {showEnrollButton && (
             <CHeaderNav className="ms-auto" style={{ cursor: 'pointer' }}>
               <CNavItem>
                 <CNavLink onClick={() => setShowEnrollModal(true)}>
