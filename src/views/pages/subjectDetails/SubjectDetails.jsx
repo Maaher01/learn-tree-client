@@ -22,6 +22,11 @@ import {
   CCol,
   CButton,
   CAvatar,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
 } from '@coreui/react'
 import defaultAvatar from '../../../assets/avatars/user.svg'
 import AuthContext from '../../../context/AuthContext'
@@ -40,6 +45,7 @@ const SubjectDetails = () => {
     return parseInt(localStorage.getItem('activeSubjectTab')) || 1
   })
   const [showPostForm, setShowPostForm] = useState(false)
+  const [showQuestionModal, setShowQuestionModal] = useState(false)
 
   const modules = {
     toolbar: [['bold', 'italic', 'underline'], [{ list: 'bullet' }], ['link']],
@@ -161,7 +167,10 @@ const SubjectDetails = () => {
               <CRow className="d-flex">
                 <CCol sm="auto" style={{ width: '30%' }}>
                   <h1>Question Bank</h1>
-                  <CButton color="primary mt-3 d-flex gap-1 align-items-center">
+                  <CButton
+                    color="primary mt-3 d-flex gap-1 align-items-center"
+                    onClick={() => setShowQuestionModal(true)}
+                  >
                     Create Question<CIcon icon={cilPlus}></CIcon>
                   </CButton>
                   {questions.length > 0 ? (
@@ -202,6 +211,24 @@ const SubjectDetails = () => {
                 </CCol>
               </CRow>
             </CContainer>
+            <CModal
+              alignment="center"
+              scrollable
+              visible={showQuestionModal}
+              onClose={() => setShowQuestionModal(false)}
+              aria-labelledby="VerticallyCenteredScrollableExample2"
+            >
+              <CModalHeader>
+                <CModalTitle id="VerticallyCenteredScrollableExample2">New Question</CModalTitle>
+              </CModalHeader>
+              <CModalBody></CModalBody>
+              <CModalFooter>
+                <CButton color="secondary" onClose={() => setShowQuestionModal(false)}>
+                  Cancel
+                </CButton>
+                <CButton color="primary">Submit</CButton>
+              </CModalFooter>
+            </CModal>
           </CTabPanel>
           <CTabPanel className="p-3" aria-labelledby="people-tab-pane" itemKey={3}>
             <CListGroup className="mt-2">
@@ -213,7 +240,10 @@ const SubjectDetails = () => {
                     className="d-flex justify-content-between gap-2 text-secondary fw-semibold mt-2"
                     key={index}
                   >
-                    <div>{peep.fullname}</div>
+                    <div className="name-img d-flex align-items-center gap-4">
+                      <CAvatar src={defaultAvatar} width={32} height={32} />
+                      <div>{peep.fullname}</div>
+                    </div>
                     <div className="d-flex gap-2" style={{ cursor: 'pointer' }}>
                       <CTooltip content={`Email ${peep.email}`} placement="bottom">
                         <CIcon size="xl" icon={cilEnvelopeClosed} />
@@ -231,7 +261,10 @@ const SubjectDetails = () => {
                     className="d-flex justify-content-between gap-2 text-secondary fw-semibold mt-2"
                     key={index}
                   >
-                    <div>{peep.fullname}</div>
+                    <div className="name-img d-flex align-items-center gap-4">
+                      <CAvatar src={defaultAvatar} width={32} height={32} />
+                      <div>{peep.fullname}</div>
+                    </div>
                     <div className="d-flex gap-2" style={{ cursor: 'pointer' }}>
                       <CTooltip content={`Email ${peep.email}`} placement="bottom">
                         <CIcon size="xl" icon={cilEnvelopeClosed} />
