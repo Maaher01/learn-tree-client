@@ -11,21 +11,17 @@ import {
   CCardTitle,
   CCardImageOverlay,
   CButton,
-  CModal,
-  CModalBody,
-  CModalFooter,
-  CModalHeader,
-  CModalTitle,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilOptions } from '@coreui/icons'
 import { useContext, useEffect, useState } from 'react'
-import { api } from '../../api/api'
 import { Link } from 'react-router-dom'
-import SubjectContext from '../../context/SubjectContext'
+import SubjectContext from '../../../context/SubjectContext'
+import EnrollModal from '../EnrollModal'
+import UnenrollModal from '../SubjectCards/UnenrollModal/UnenrollModal'
 
 const SubjectCards = (props) => {
-  const [error, setError] = useState('')
+  const [showEnrollModal, setShowEnrollModal] = useState(false)
   const [selectedSubject, setSelectedSubject] = useState(null)
 
   const { getAllUserSubjects, subjects } = useContext(SubjectContext)
@@ -33,17 +29,6 @@ const SubjectCards = (props) => {
   useEffect(() => {
     getAllUserSubjects()
   }, [])
-
-  const deleteEnrollemnt = async (subject_id) => {
-    try {
-      await api.delete(`/subject-enrollment/delete-subject-enrollment`, { data: { subject_id } })
-      setSelectedSubject(null)
-      getAllUserSubjects()
-    } catch (error) {
-      console.error('Error deleting enrollment', error)
-      setError(error)
-    }
-  }
 
   const images = [
     'src/assets/images/Honors.jpg',
@@ -56,7 +41,7 @@ const SubjectCards = (props) => {
       <CRow className={props.className} xs={{ gutter: 4 }}>
         {subjects.length > 0 ? (
           subjects.map((subject, index) => (
-            <CCol sm={6} xl={4} xxl={3} key={index}>
+            <CCol sm={6} xl={4} xxl={3} key={subject.subject_id}>
               <CCard style={{ height: '239px', cursor: 'pointer' }}>
                 <Link to={`/class/details/${subject.class_id}/${subject.subject_id}`}>
                   <CCardImage orientation="top" src={images[index % images.length]} height={100} />
@@ -97,36 +82,22 @@ const SubjectCards = (props) => {
           >
             <img src="src/assets/images/empty_states_home.svg" />
             <p className="mt-4 mb-2 fw-bolder text-secondary">No classes to show</p>
-            <CButton color="primary" className="text-light fw-bolder">
+            <CButton
+              color="primary"
+              className="text-light fw-bolder"
+              onClick={() => setShowEnrollModal(true)}
+            >
               Join Class
             </CButton>
           </div>
         )}
       </CRow>
-      <CModal
-        alignment="center"
-        scrollable
+      <UnenrollModal
         visible={!!selectedSubject}
+        subject={selectedSubject}
         onClose={() => setSelectedSubject(null)}
-        aria-labelledby="VerticallyCenteredScrollableExample2"
-      >
-        <CModalHeader>
-          <CModalTitle id="VerticallyCenteredScrollableExample2">
-            Unenroll from {selectedSubject?.subject_name} {selectedSubject?.class_name}?
-          </CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          <p>You will be removed from this class.</p>
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setSelectedSubject(null)}>
-            Cancel
-          </CButton>
-          <CButton color="primary" onClick={() => deleteEnrollemnt(selectedSubject?.subject_id)}>
-            Unenroll
-          </CButton>
-        </CModalFooter>
-      </CModal>
+      />
+      <EnrollModal visible={showEnrollModal} onClose={() => setShowEnrollModal(false)} />
     </>
   )
 }

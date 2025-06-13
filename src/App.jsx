@@ -8,10 +8,12 @@ import './scss/style.scss'
 // Contexts
 import { AuthProvider } from './context/AuthContext'
 import { SubjectProvider } from './context/SubjectContext'
+import { PostProvider } from './context/PostContext'
 
 // We use those styles to show code examples, you should remove them in your application.
 import './scss/examples.scss'
-import ProtectedRoute from './components/ProtectedRoute'
+import ProtectedRoute from './routes/ProtectedRoute'
+import PublicRoute from './routes/PublicRoute'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -50,14 +52,30 @@ const App = () => {
       >
         <AuthProvider>
           <SubjectProvider>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route element={<ProtectedRoute />}>
-                <Route path="/*" element={<DefaultLayout />} />
-              </Route>
-              <Route path="*" element={<Page404 />} />
-            </Routes>
+            <PostProvider>
+              <Routes>
+                <Route
+                  path="/login"
+                  element={
+                    <PublicRoute>
+                      <Login />
+                    </PublicRoute>
+                  }
+                />
+                <Route
+                  path="/register"
+                  element={
+                    <PublicRoute>
+                      <Register />
+                    </PublicRoute>
+                  }
+                />
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/*" element={<DefaultLayout />} />
+                </Route>
+                <Route path="*" element={<Page404 />} />
+              </Routes>
+            </PostProvider>
           </SubjectProvider>
         </AuthProvider>
       </Suspense>

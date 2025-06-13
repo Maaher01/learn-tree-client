@@ -1,4 +1,4 @@
-import SubjectCards from '../widgets/SubjectCards'
+import SubjectCards from '../components/SubjectCards/SubjectCards'
 
 const Dashboard = () => {
   return (

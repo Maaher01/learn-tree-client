@@ -18,7 +18,7 @@ import { loginFormSchema } from '../../../schema'
 import { api } from '../../../api/api'
 import AuthContext from '../../../context/AuthContext'
 import { useContext, useState } from 'react'
-import CustomInput from '../../../components/CustomInput/CustomInput'
+import CustomInput from '../../components/CustomInput/CustomInput'
 
 const Login = () => {
   const { checkAuth } = useContext(AuthContext)
@@ -32,8 +32,8 @@ const Login = () => {
       await checkAuth()
       navigate('/')
     } catch (error) {
-      console.error('Login Failed:', error)
-      setError(error)
+      console.error('Login Failed:', error.response.data.message)
+      setError(error.response.data.message)
     }
   }
 
@@ -73,20 +73,22 @@ const Login = () => {
                           </CButton>
                         </CCol>
                         {/* <CCol xs={6} className="text-right">
-                          <CButton color="link" className="px-0">
-                            Forgot password?
-                          </CButton>
+                          <Link to="/forgot-password">
+                            <CButton color="link" className="px-0">
+                              Forgot password?
+                            </CButton>
+                          </Link>
                         </CCol> */}
                       </CRow>
                     </Form>
                   </Formik>
                 </CCardBody>
               </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
+              <CCard className="text-white bg-primary py-5">
                 <CCardBody className="text-center">
                   <div>
                     <img src="src/assets/brand/learn-tree-favicon.png" width={100} height={75} />
-                    <h2 className="mt-2">Sign up</h2>
+                    <h2 className="mt-2">Sign up to LearnTree</h2>
                     <p>Don't have an account yet?</p>
                     <Link to="/register">
                       <CButton color="primary" className="mt-3" active tabIndex={-1}>

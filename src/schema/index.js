@@ -6,10 +6,6 @@ const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,11}$/
 export const registerFormSchema = yup.object().shape({
   fullname: yup.string().required('Full Name is required'),
   email: yup.string().email('Please enter a valid email').required('Email is required'),
-  mobile: yup
-    .string()
-    .length(11, 'Plaese enter a valid 11 digit mobile number')
-    .required('Mobile number is required'),
   password: yup
     .string()
     .matches(passwordRules, {
@@ -27,4 +23,20 @@ export const registerFormSchema = yup.object().shape({
 export const loginFormSchema = yup.object().shape({
   email: yup.string().required('Email is required'),
   password: yup.string().required('Password is required'),
+})
+
+export const postSchema = yup.object().shape({
+  post_text: yup.string().test('isNotEmpty', 'Post cannot be empty', (value) => {
+    if (!value) return false
+    const text = value.replace(/<[^>]*>/g, '').trim()
+    return text.length > 0
+  }),
+})
+
+export const postCommentSchema = yup.object().shape({
+  comment_text: yup.string().test('isNotEmpty', 'Comment cannot be empty', (value) => {
+    if (!value) return false
+    const text = value.replace(/<[^>]*>/g, '').trim()
+    return text.length > 0
+  }),
 })

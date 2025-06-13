@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await api.post(`/auth/logout`)
       setIsLoggedIn(false)
+      localStorage.removeItem('activeSubjectTab')
       navigate('/')
     } catch (err) {
       console.error('Login Failed:', err)
