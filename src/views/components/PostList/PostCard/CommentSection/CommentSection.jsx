@@ -26,14 +26,13 @@ const CommentSection = ({ post, comments, refreshComments }) => {
           </CButton>
         )}
         {comments?.length === 1 && (
-          <CButton
+          <div
             className="d-flex align-items-center gap-2 p-0 fw-medium text-secondary my-3"
-            onClick={handleToggleComments}
             style={{ fontSize: '14.5px' }}
           >
             <CIcon icon={cilPeople} />
             <p className="mb-0">{comments.length} class comment</p>
-          </CButton>
+          </div>
         )}
         {visibleComments?.map((comment) => (
           <CommentItem

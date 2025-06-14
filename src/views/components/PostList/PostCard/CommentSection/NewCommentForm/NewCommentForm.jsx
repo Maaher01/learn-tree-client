@@ -59,7 +59,7 @@ const NewCommentForm = ({ post, refreshComments }) => {
   }
 
   return (
-    <div className="d-flex gap-3 w-100 mt-1">
+    <div className="d-flex gap-3 w-100 mt-3">
       {user.image ? (
         <img src={user.image} style={{ width: '32px', height: '32px', borderRadius: '50%' }} />
       ) : (
@@ -72,9 +72,9 @@ const NewCommentForm = ({ post, refreshComments }) => {
         validateOnMount={true}
       >
         {({ values, setFieldValue, isValid, dirty }) => (
-          <Form className="d-flex w-100 align-items-center gap-2">
+          <Form className="d-flex w-100 align-items-center gap-2" ref={formRef}>
             {showCommentForm ? (
-              <div className="flex-grow-1 mb-2" ref={formRef}>
+              <div className="flex-grow-1 mb-2">
                 <ReactQuill
                   theme="snow"
                   modules={modules}
